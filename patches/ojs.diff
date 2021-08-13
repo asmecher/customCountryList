@@ -1,0 +1,49 @@
+diff --git a/classes/subscription/form/SubscriptionForm.inc.php b/classes/subscription/form/SubscriptionForm.inc.php
+index 777787bcc4..dee0eb33ba 100644
+--- a/classes/subscription/form/SubscriptionForm.inc.php
++++ b/classes/subscription/form/SubscriptionForm.inc.php
+@@ -53,6 +53,7 @@ class SubscriptionForm extends Form {
+ 		foreach ($isoCodes->getCountries() as $country) {
+ 			$this->validCountries[$country->getAlpha2()] = $country->getLocalName();
+ 		}
++		HookRegistry::call('IsoCodesFactory::getCountries', [&$validCountries]);
+ 		asort($this->validCountries);
+ 
+ 		// User is provided and valid
+diff --git a/pages/search/SearchHandler.inc.php b/pages/search/SearchHandler.inc.php
+index e36f40beea..2ddd88a7ab 100644
+--- a/pages/search/SearchHandler.inc.php
++++ b/pages/search/SearchHandler.inc.php
+@@ -269,8 +269,10 @@ class SearchHandler extends Handler {
+ 
+ 			$isoCodes = new \Sokil\IsoCodes\IsoCodesFactory();
+ 			$countries = $countries = $isoCodes->getCountries();
+-			$country = $countries->getByAlpha2($country);
+-			$templateMgr->assign('country', $country?$country->getLocalName():'');
++			$countryObject = $countries->getByAlpha2($country);
++			$countryName = $countryObject ? $countryObject->getLocalName() : '';
++			HookRegistry::call('IsoCodesFactory::getLocalName', [&$countryName, $country]);
++			$templateMgr->assign('country', $countryName);
+ 
+ 			$templateMgr->display('frontend/pages/searchAuthorDetails.tpl');
+ 		} else {
+diff --git a/plugins/reports/subscriptions/SubscriptionReportPlugin.inc.php b/plugins/reports/subscriptions/SubscriptionReportPlugin.inc.php
+index 64cd686f4b..675168998b 100644
+--- a/plugins/reports/subscriptions/SubscriptionReportPlugin.inc.php
++++ b/plugins/reports/subscriptions/SubscriptionReportPlugin.inc.php
+@@ -142,6 +142,7 @@ class SubscriptionReportPlugin extends ReportPlugin {
+ 					case 'country':
+ 						$country = $countries->getByAlpha2($user->getCountry());
+ 						$columns[$index] = $country?$country->getLocalName():'';
++						HookRegistry::call('IsoCodesFactory::getLocalName', [&$columns[$index], $user->getCountry()]);
+ 						break;
+ 					case 'email':
+ 						$columns[$index] = $user->getEmail();
+@@ -237,6 +238,7 @@ class SubscriptionReportPlugin extends ReportPlugin {
+ 					case 'country':
+ 						$country = $countries->getByAlpha2($user->getCountry());
+ 						$columns[$index] = $country?$country->getLocalName():'';
++						HookRegistry::call('IsoCodesFactory::getLocalName', [&$columns[$index], $user->getCountry()]);
+ 						break;
+ 					case 'email':
+ 						$columns[$index] = $user->getEmail();
