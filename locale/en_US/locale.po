@@ -1,0 +1,48 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2019-11-19T11:05:26+00:00\n"
+"PO-Revision-Date: 2019-11-19T11:05:26+00:00\n"
+"Language: \n"
+
+msgid "plugins.generic.customCountryList.name"
+msgstr "Custom Country List Plugin"
+
+msgid "plugins.generic.customCountryList.description"
+msgstr "This plugin enables adjustment of the built-in country list, permitting renaming existing countries and adding new ones."
+
+msgid "plugins.generic.customCountryList.customCountryData"
+msgstr "Custom country data"
+
+msgid "plugins.generic.customCountryList.settings.saved"
+msgstr "The custom country data has been saved."
+
+msgid "plugins.generic.customCountryList.settings.countryList"
+msgstr "Country List"
+
+msgid "plugins.generic.customCountryList.settings.countryList.description"
+msgstr "A list of countries augmenting the built-in ISO3166 country list"
+
+msgid "plugins.generic.customCountryList.settings.identifier"
+msgstr "Identifier"
+
+msgid "plugins.generic.customCountryList.settings.identifier.description"
+msgstr "The ISO3166-style identifier for this country (e.g. CA for Canada)"
+
+msgid "plugins.generic.customCountryList.settings.translations"
+msgstr "Translations"
+
+msgid "plugins.generic.customCountryList.settings.translation"
+msgstr "Translation"
+
+msgid "plugins.generic.customCountryList.settings.localeCode"
+msgstr "Locale Code"
+
+msgid "plugins.generic.customCountryList.settings.localeCode.description"
+msgstr "The locale code for this translation (e.g. en_US for English)"
