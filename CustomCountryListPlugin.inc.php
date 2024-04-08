@@ -66,8 +66,8 @@ class CustomCountryListPlugin extends GenericPlugin {
 
 		// Get potentially applicable locales
 		$locale = AppLocale::getLocale();
-		$siteLocale = Application::getRequest()->getSite()->getPrimaryLocale();
-		$context = Application::getRequest()->getContext();
+		$siteLocale = Application::get()->getRequest()->getSite()->getPrimaryLocale();
+		$context = Application::get()->getRequest()->getContext();
 		$contextLocale = $context ? $context->getPrimaryLocale() : $siteLocale;
 
 		// Merge custom country list onto ISO3166 country list, using translations in precedence order with fallback
@@ -92,8 +92,8 @@ class CustomCountryListPlugin extends GenericPlugin {
 			if ($countryCode != $countryEntry['code']) continue;
 
 			$locale = AppLocale::getLocale();
-			$siteLocale = Application::getRequest()->getSite()->getPrimaryLocale();
-			$context = Application::getRequest()->getContext();
+			$siteLocale = Application::get()->getRequest()->getSite()->getPrimaryLocale();
+			$context = Application::get()->getRequest()->getContext();
 			$contextLocale = $context ? $context->getPrimaryLocale() : $siteLocale;
 			$countryName = $this->getBestTranslation($countryEntry, $locale, $contextLocale, $siteLocale);
 			return false;

@@ -1,75 +1,32 @@
-diff --git a/classes/i18n/CountryDAO.inc.php b/classes/i18n/CountryDAO.inc.php
-index 8f4ce5b04..a2a645cc3 100644
---- a/classes/i18n/CountryDAO.inc.php
-+++ b/classes/i18n/CountryDAO.inc.php
-@@ -36,6 +36,7 @@ class CountryDAO extends DAO {
+diff --git a/classes/subscription/form/SubscriptionForm.inc.php b/classes/subscription/form/SubscriptionForm.inc.php
+index 1c352c3166..11f9d0f13c 100644
+--- a/classes/subscription/form/SubscriptionForm.inc.php
++++ b/classes/subscription/form/SubscriptionForm.inc.php
+@@ -55,6 +55,7 @@ class SubscriptionForm extends Form {
  		foreach ($isoCodes->getCountries() as $country) {
- 			$countries[$country->getAlpha2()] = $country->getLocalName();
+ 			$this->validCountries[$country->getAlpha2()] = $country->getLocalName();
  		}
-+		HookRegistry::call('IsoCodesFactory::getCountries', [&$countries]);
- 		asort($countries);
- 		return $countries;
- 	}
-diff --git a/classes/identity/Identity.inc.php b/classes/identity/Identity.inc.php
-index 05ca3698f..182c1e0c8 100644
---- a/classes/identity/Identity.inc.php
-+++ b/classes/identity/Identity.inc.php
-@@ -257,7 +257,9 @@ class Identity extends DataObject {
- 		if (!$countryCode) return null;
- 		$isoCodes = new \Sokil\IsoCodes\IsoCodesFactory();
- 		$country = $isoCodes->getCountries()->getByAlpha2($countryCode);
--		return $country?$country->getLocalName():null;
-+		$countryName = $country ? $country->getLocalName() : null;
-+		HookRegistry::call('IsoCodesFactory::getLocalName', [&$countryName, $countryCode]);
-+		return $countryName;
- 	}
++		HookRegistry::call('IsoCodesFactory::getCountries', [&$validCountries]);
+ 		asort($this->validCountries);
  
- 	/**
-diff --git a/classes/user/form/ContactForm.inc.php b/classes/user/form/ContactForm.inc.php
-index 96c8ba6b3..ffdfd501a 100644
---- a/classes/user/form/ContactForm.inc.php
-+++ b/classes/user/form/ContactForm.inc.php
-@@ -40,6 +40,7 @@ class ContactForm extends BaseProfileForm {
- 		foreach ($isoCodes->getCountries() as $country) {
- 			$countries[$country->getAlpha2()] = $country->getLocalName();
- 		}
-+		HookRegistry::call('IsoCodesFactory::getCountries', [&$countries]);
- 		asort($countries);
- 		$templateMgr = TemplateManager::getManager($request);
- 		$templateMgr->assign(array(
-diff --git a/classes/user/form/RegistrationForm.inc.php b/classes/user/form/RegistrationForm.inc.php
-index c1485d27e..945be1e8e 100644
---- a/classes/user/form/RegistrationForm.inc.php
-+++ b/classes/user/form/RegistrationForm.inc.php
-@@ -103,6 +103,7 @@ class RegistrationForm extends Form {
- 		foreach ($isoCodes->getCountries() as $country) {
- 			$countries[$country->getAlpha2()] = $country->getLocalName();
- 		}
-+		HookRegistry::call('IsoCodesFactory::getCountries', [&$countries]);
- 		asort($countries);
- 		$templateMgr->assign('countries', $countries);
- 
-diff --git a/controllers/grid/settings/user/form/UserDetailsForm.inc.php b/controllers/grid/settings/user/form/UserDetailsForm.inc.php
-index a5393a256..50cdaefc9 100644
---- a/controllers/grid/settings/user/form/UserDetailsForm.inc.php
-+++ b/controllers/grid/settings/user/form/UserDetailsForm.inc.php
-@@ -163,6 +163,7 @@ class UserDetailsForm extends UserForm {
- 		foreach ($isoCodes->getCountries() as $country) {
- 			$countries[$country->getAlpha2()] = $country->getLocalName();
- 		}
-+		HookRegistry::call('IsoCodesFactory::getCountries', [&$countries]);
- 		asort($countries);
- 		$templateMgr = TemplateManager::getManager($request);
- 
-diff --git a/controllers/grid/users/author/form/PKPAuthorForm.inc.php b/controllers/grid/users/author/form/PKPAuthorForm.inc.php
-index 12df4e48d..700c6b4c2 100644
---- a/controllers/grid/users/author/form/PKPAuthorForm.inc.php
-+++ b/controllers/grid/users/author/form/PKPAuthorForm.inc.php
-@@ -134,6 +134,7 @@ class PKPAuthorForm extends Form {
- 		foreach ($isoCodes->getCountries() as $country) {
- 			$countries[$country->getAlpha2()] = $country->getLocalName();
- 		}
-+		HookRegistry::call('IsoCodesFactory::getCountries', [&$countries]);
- 		asort($countries);
- 		$templateMgr = TemplateManager::getManager($request);
- 		$templateMgr->assign(array(
+ 		// User is provided and valid
+diff --git a/plugins/reports/subscriptions/SubscriptionReportPlugin.inc.php b/plugins/reports/subscriptions/SubscriptionReportPlugin.inc.php
+index 40ba5d1401..e3c0eace2a 100644
+--- a/plugins/reports/subscriptions/SubscriptionReportPlugin.inc.php
++++ b/plugins/reports/subscriptions/SubscriptionReportPlugin.inc.php
+@@ -146,6 +146,7 @@ class SubscriptionReportPlugin extends ReportPlugin {
+ 							$country = $countries->getByAlpha2($user->getCountry());
+ 						}
+ 						$columns[$index] = $country?$country->getLocalName():'';
++						HookRegistry::call('IsoCodesFactory::getLocalName', [&$columns[$index], $user->getCountry()]);
+ 						break;
+ 					case 'email':
+ 						$columns[$index] = $user->getEmail();
+@@ -241,6 +242,7 @@ class SubscriptionReportPlugin extends ReportPlugin {
+ 					case 'country':
+ 						$country = $countries->getByAlpha2($user->getCountry());
+ 						$columns[$index] = $country?$country->getLocalName():'';
++						HookRegistry::call('IsoCodesFactory::getLocalName', [&$columns[$index], $user->getCountry()]);
+ 						break;
+ 					case 'email':
+ 						$columns[$index] = $user->getEmail();
